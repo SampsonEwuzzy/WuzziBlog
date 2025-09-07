@@ -7,6 +7,12 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-success">Publish</button>
+    <a href="{% url 'posts:home' %}" class="btn btn-secondary ms-2">Cancel</a> <!-- Added cancel link -->
   </form>
+  {% if form.errors %}
+    <div class="alert alert-danger mt-3">
+      Please correct the errors below.
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

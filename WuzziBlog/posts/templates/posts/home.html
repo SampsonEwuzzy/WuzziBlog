@@ -1,24 +1,42 @@
-
 {% extends "base.html" %}
 
-
 {% block content %}
-<h1>Welcome to Wuzzle Blog</h1>
+<div class="container custom-container">
 
-<div class="carousel">
-    {% for post in latest_posts %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-  <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="{{ post.title }}">
-  <div class="carousel-caption d-none d-md-block">
-    <h5>
-      <a href="{% url 'post_detail' post.pk %}" class="text-white">{{ post.title }}</a>
-    </h5>
-    <p>{{ post.content|truncatechars:100 }}</p>
-  </div>
-</div>
+    <h1 class="mb-4 text-center">Welcome to WuzziBlog</h1>
 
-    {% empty %}
-        <p>No posts yet.</p>
-    {% endfor %}
-</div>
-{% endblock %}
+    {% if latest_posts %}
+    <div id="postCarousel" class="carousel slide custom-carousel" data-bs-ride="carousel">
+        <div class="carousel-inner">
+
+            {% for post in latest_posts %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <a href="{% url 'posts:post_detail' slug=post.slug %}" class="d-block w-100 text-decoration-none">
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="d-block w-100" alt="{{ post.title }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="Placeholder">
+                    {% endif %}
+                    <div class="carousel-caption d-none d-md-block w-100">
+                        <h5>{{ post.title }}</h5>
+                        <p>{{ post.content|striptags|truncatechars:100 }}</p>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div> {% else %}
+        <p class="text-center">No posts yet.</p>
+    {% endif %}
+
+</div> {% endblock %}

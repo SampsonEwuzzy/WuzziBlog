@@ -2,11 +2,190 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h2>{{ post.title }}</h2>
-  <p><small>By {{ post.author }} on {{ post.created_at }}</small></p>
-  {% if post.image %}
-    <img src="{{ post.image.url }}" class="img-fluid mb-3" alt="{{ post.title }}">
-  {% endif %}
-  <p>{{ post.content }}</p>
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h2>{{ post.title }}</h2>
+            <p><small>By {{ post.author }} on {{ post.created_at }}</small></p>
+
+            {% if post.category %}
+                <p>Category: <a href="{% url 'posts:category_posts' post.category.name %}">{{ post.category.name }}</a></p>
+            {% else %}
+                <p>Category: Uncategorized</p>
+            {% endif %}
+
+            {% if post.image %}
+                <figure class="post-image-container">
+                    <img src="{{ post.image.url }}" class="img-fluid mb-2 post-content-image" alt="{{ post.title }}">
+                    {% if post.image_caption %}
+                        <figcaption class="image-caption">{{ post.image_caption }}</figcaption>
+                    {% endif %}
+                </figure>
+            {% elif post.image_url %}
+                <figure class="post-image-container">
+                    <img src="{{ post.image_url }}" class="img-fluid mb-2 post-content-image" alt="{{ post.title }}">
+                    {% if post.image_caption %}
+                        <figcaption class="image-caption">{{ post.image_caption }}</figcaption>
+                    {% endif %}
+                </figure>
+            {% endif %}
+
+            <div class="post-content">
+                {{ post.content|safe }}
+            </div>
+
+            {% if user.is_authenticated and user == post.author %}
+                <a href="{% url 'posts:edit_post' post.slug %}" class="btn btn-warning btn-sm me-2">Edit Post</a>
+                <a href="{% url 'posts:delete_post' post.slug %}" class="btn btn-danger btn-sm">Delete Post</a>
+            {% endif %}
+
+            {% include 'includes/post_actions.html' %}
+            {% include 'includes/comments_section.html' %}
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // CSRF Token setup for AJAX
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Like functionality (slug-based)
+    $('.like-btn').click(function(e) {
+        e.preventDefault();
+        const slug = $(this).data('post-slug');
+        const button = $(this);
+        const icon = button.find('i');
+        const counter = button.find('.like-count');
+        
+        button.prop('disabled', true);
+        
+        $.ajax({
+            url: `/toggle-like/${slug}/`,
+            type: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(data) {
+                if (data.success) {
+                    if (data.liked) {
+                        icon.removeClass('text-secondary').addClass('text-danger');
+                    } else {
+                        icon.removeClass('text-danger').addClass('text-secondary');
+                    }
+                    if (counter.length) {
+                        counter.text(data.total_likes);
+                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', error);
+                alert('Error processing like. Please try again.');
+            },
+            complete: function() {
+                button.prop('disabled', false);
+            }
+        });
+    });
+
+    // Reply functionality
+    $('.reply-btn').click(function(e) {
+        e.preventDefault();
+        const commentId = $(this).data('comment-id');
+        const replyForm = $(`#reply-form-${commentId}`);
+        
+        replyForm.toggle();
+        if (replyForm.is(':visible')) {
+            replyForm.find('textarea').focus();
+        }
+    });
+
+    // Cancel reply
+    $('.cancel-reply').click(function(e) {
+        e.preventDefault();
+        $(this).closest('.reply-form').hide();
+    });
+
+    // Social sharing
+    $('.share-social').click(function(e) {
+        e.preventDefault();
+        const platform = $(this).data('platform');
+        const slug = $(this).data('post-slug');
+        const postTitle = encodeURIComponent($('h2').first().text() || 'Check this out!');
+        const postUrl = encodeURIComponent(window.location.href);
+        
+        let shareUrl = '';
+        switch(platform) {
+            case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${postUrl}`;
+                break;
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?url=${postUrl}&text=${postTitle}`;
+                break;
+            case 'whatsapp':
+                shareUrl = `https://wa.me/?text=${postTitle}%20${postUrl}`;
+                break;
+        }
+        if (shareUrl) {
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+    });
+
+    // Copy link functionality
+    $('.copy-link, .copy-url').click(function(e) {
+        e.preventDefault();
+        const url = $(this).data('url') || window.location.href;
+        
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(() => {
+                $(this).html('<i class="fas fa-check me-2"></i>Copied!');
+                setTimeout(() => {
+                    $(this).html('<i class="fas fa-copy me-2"></i>Copy Link');
+                }, 2000);
+            });
+        } else {
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            $(this).html('<i class="fas fa-check me-2"></i>Copied!');
+            setTimeout(() => {
+                $(this).html('<i class="fas fa-copy me-2"></i>Copy Link');
+            }, 2000);
+        }
+    });
+
+    // Form validation
+    $('.comment-form').submit(function(e) {
+        const content = $(this).find('textarea[name="content"]').val().trim();
+        if (!content) {
+            e.preventDefault();
+            alert('Please write a comment before submitting.');
+            return false;
+        }
+    });
+});
+</script>
 {% endblock %}
