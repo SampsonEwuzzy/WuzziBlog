@@ -1,0 +1,76 @@
+<div class="post-actions mb-3 border-bottom pb-3">
+    <div class="d-flex align-items-center gap-4">
+        {% if user.is_authenticated %}
+            <button class="btn btn-link p-0 like-btn d-flex align-items-center gap-1" 
+                    data-post-slug="{{ post.slug }}" 
+                    data-csrf-token="{{ csrf_token }}">
+                <i class="fas fa-heart {% if user_has_liked %}text-danger{% else %}text-secondary{% endif %}"></i>
+                <span class="like-count fw-bold">{{ post.likes.count }}</span>
+                <small class="text-muted">Like{% if post.likes.count != 1 %}s{% endif %}</small>
+            </button>
+        {% else %}
+            <span class="d-flex align-items-center gap-1 text-muted">
+                <i class="far fa-heart"></i>
+                <span class="fw-bold">{{ post.likes.count }}</span>
+                <small>Like{% if post.likes.count != 1 %}s{% endif %}</small>
+            </span>
+        {% endif %}
+        
+        <span class="d-flex align-items-center gap-1 text-muted">
+            <i class="far fa-comment"></i>
+            <span class="fw-bold">{{ post.comments.count }}</span>
+            <small>Comment{% if post.comments.count != 1 %}s{% endif %}</small>
+        </span>
+        
+        {% if user.is_authenticated %}
+            <div class="dropdown">
+                <button class="btn btn-link p-0 d-flex align-items-center gap-1 text-muted" 
+                        type="button" 
+                        data-bs-toggle="dropdown">
+                    <i class="fas fa-share"></i>
+                    <span class="fw-bold">{{ post.shares.count }}</span>
+                    <small>Share{% if post.shares.count != 1 %}s{% endif %}</small>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'posts:share_post' slug=post.slug %}">
+                        <i class="fas fa-bookmark me-2"></i>Save to Profile
+                    </a></li>
+                    <li><a class="dropdown-item share-social" href="#" data-platform="facebook" data-post-slug="{{ post.slug }}">
+                        <i class="fab fa-facebook me-2"></i>Facebook
+                    </a></li>
+                    <li><a class="dropdown-item share-social" href="#" data-platform="twitter" data-post-slug="{{ post.slug }}">
+                        <i class="fab fa-twitter me-2"></i>Twitter
+                    </a></li>
+                    <li><a class="dropdown-item share-social" href="#" data-platform="whatsapp" data-post-slug="{{ post.slug }}">
+                        <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item copy-link" href="#" data-url="{% url 'posts:post_detail' slug=post.slug %}">
+                        <i class="fas fa-copy me-2"></i>Copy Link
+                    </a></li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+    
+    {% if shared_post %}
+        <div class="alert alert-success mt-3" role="alert">
+            <h6 class="alert-heading"><i class="fas fa-share me-2"></i>Post Shared Successfully!</h6>
+            <p class="mb-2">Share "<strong>{{ shared_post.title }}</strong>" with your friends:</p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ shared_post.facebook_url }}" target="_blank" class="btn btn-primary btn-sm">
+                    <i class="fab fa-facebook me-1"></i>Facebook
+                </a>
+                <a href="{{ shared_post.twitter_url }}" target="_blank" class="btn btn-info btn-sm">
+                    <i class="fab fa-twitter me-1"></i>Twitter
+                </a>
+                <a href="{{ shared_post.whatsapp_url }}" target="_blank" class="btn btn-success btn-sm">
+                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                </a>
+                <button class="btn btn-secondary btn-sm copy-url" data-url="{{ shared_post.url }}">
+                    <i class="fas fa-copy me-1"></i>Copy Link
+                </button>
+            </div>
+        </div>
+    {% endif %}
+</div>
