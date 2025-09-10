@@ -2,7 +2,7 @@ databases:
   - name: wuzziblog_db
     plan: free
     databaseName: wuzziblog_db
-    user: WuzziBlog
+    user: wuzziblog
 
 services:
   - type: web
