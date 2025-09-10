@@ -9,59 +9,70 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  
+  <style>
+    .navbar .nav-link {
+      transition: color 0.3s ease, text-decoration 0.3s ease;
+    }
+    .navbar .nav-link:hover {
+      color: #66B2FF !important;
+      text-decoration: underline !important;
+    }
+    .navbar .btn-link.nav-link:hover {
+      color: #66B2FF !important;
+      text-decoration: underline !important;
+    }
+  </style>
+
   {% block extra_head %}{% endblock %}
   <link rel="icon" href="{% static 'images/wuzziblog-logo.png' %}">
 </head>
 <body class="d-flex flex-column min-vh-100">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
-    <div class="container-fluid d-flex align-items-center justify-content-between">
-      <a class="navbar-brand fw-bold fs-4" href="{% url 'posts:home' %}">
-        WuzziBlog
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: linear-gradient(90deg, #007BFF, #0056B3); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
+    <a class="navbar-brand fw-bold text-white fs-4" href="{% url 'posts:home' %}" style="text-decoration: none; transition: background-image 0.3s ease, color 0.3s ease;" onmouseover="this.style.backgroundImage='linear-gradient(90deg, #8E2DE2, #4A00E0)'; this.style.color='#FFFFFF';" onmouseout="this.style.backgroundImage='none'; this.style.color='white';">
+      WuzziBlog
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-4">
-          <li class="nav-item"><a class="nav-link px-3 py-2" href="{% url 'posts:home' %}">Home</a></li>
-          <li class="nav-item"><a class="nav-link px-3 py-2" href="{% url 'posts:about' %}">About</a></li>
-          <li class="nav-item"><a class="nav-link px-3 py-2" href="{% url 'posts:list' %}">Posts</a></li>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-4">
+        <li class="nav-item"><a class="nav-link text-white px-3 py-2" href="{% url 'posts:home' %}" style="text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#66B2FF'; this.style.textDecoration='underline';" onmouseout="this.style.color='white'; this.style.textDecoration='none';">Home</a></li>
+        <li class="nav-item"><a class="nav-link text-white px-3 py-2" href="{% url 'posts:about' %}" style="text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#66B2FF'; this.style.textDecoration='underline';" onmouseout="this.style.color='white'; this.style.textDecoration='none';">About</a></li>
+        <li class="nav-item"><a class="nav-link text-white px-3 py-2" href="{% url 'posts:list' %}" style="text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#66B2FF'; this.style.textDecoration='underline';" onmouseout="this.style.color='white'; this.style.textDecoration='none';">Posts</a></li>
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link text-white px-3 py-2" href="{% url 'posts:new_post' %}" style="text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#66B2FF'; this.style.textDecoration='underline';" onmouseout="this.style.color='white'; this.style.textDecoration='none';">Add Post</a></li>
+        {% endif %}
+      </ul>
+      
+      <div class="d-flex align-items-center gap-3">
+        {% if user.is_authenticated %}
+        <form class="d-flex my-0" action="{% url 'posts:search' %}" method="get">
+          <input class="form-control me-2" type="search" placeholder="Search posts..." aria-label="Search" name="q" style="min-width: 200px; background-color: rgba(255, 255, 255, 0.9); color: #333;">
+          <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
+        </form>
+        {% endif %}
 
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           {% if user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link px-3 py-2" href="{% url 'posts:new_post' %}">Add Post</a></li>
+          <li class="nav-item">
+            <form method="post" action="{% url 'users:logout' %}" class="d-inline m-0 p-0">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link nav-link text-white px-3 py-2" style="text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#66B2FF'; this.style.textDecoration='underline';" onmouseout="this.style.color='white'; this.style.textDecoration='none';">
+                Logout
+              </button>
+            </form>
+          </li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link text-white px-3 py-2" href="{% url 'users:register' %}" style="text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#66B2FF'; this.style.textDecoration='underline';" onmouseout="this.style.color='white'; this.style.textDecoration='none';">Register</a></li>
+            <li class="nav-item"><a class="nav-link text-white px-3 py-2" href="{% url 'users:login' %}" style="text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#66B2FF'; this.style.textDecoration='underline';" onmouseout="this.style.color='white'; this.style.textDecoration='none';">Login</a></li>
           {% endif %}
         </ul>
-        
-        <div class="d-flex align-items-center gap-3">
-          {% if user.is_authenticated %}
-          <form class="d-flex my-0" action="{% url 'posts:search' %}" method="get">
-            <input class="form-control me-2" type="search" placeholder="Search posts..." aria-label="Search" name="q" style="min-width: 200px;">
-            <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
-          </form>
-          {% endif %}
-
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            {% if user.is_authenticated %}
-            <li class="nav-item">
-              <form method="post" action="{% url 'users:logout' %}" class="d-inline m-0 p-0">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-link nav-link text-white px-3 py-2" style="text-decoration: none;">
-                  Logout
-                </button>
-              </form>
-            </li>
-            {% else %}
-              <li class="nav-item"><a class="nav-link px-3 py-2" href="{% url 'users:register' %}">Register</a></li>
-              <li class="nav-item"><a class="nav-link px-3 py-2" href="{% url 'users:login' %}">Login</a></li>
-            {% endif %}
-          </ul>
-        </div>
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
 
   <div class="container mt-5 pt-4">
     {% if messages %}
@@ -78,9 +89,11 @@
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="bg-dark text-light text-center py-3 mt-auto">
+  <footer class="bg-dark text-light py-3 mt-auto" style="background: linear-gradient(90deg, #007BFF, #0056B3);">
+  <div class="container text-center">
     <p class="mb-0">&copy; {{ year|default:2025 }} WuzziBlog. All rights reserved.</p>
-  </footer>
+  </div>
+</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
