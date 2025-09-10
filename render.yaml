@@ -9,9 +9,8 @@ services:
     plan: free
     name: WuzziBlog
     runtime: python
-    rootDirectory: WuzziBlog   # 👈 this tells Render to run inside the WuzziBlog folder
     buildCommand: './build.sh'
-    startCommand: 'gunicorn --bind 0.0.0.0:$PORT --log-level debug --error-logfile - WuzziBlog.wsgi'
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT WuzziBlog.wsgi:application"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
