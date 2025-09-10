@@ -3,54 +3,89 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h2>Create or Edit Post</h2>
+            <h2 class="mb-4 text-center">Create or Edit Post</h2>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.media }}
-                
+
                 <div class="mb-3">
                     <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
                     {{ form.title }}
+                    {% if form.title.errors %}
+                        {% for error in form.title.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="{{ form.content.id_for_label }}" class="form-label">Content</label>
                     {{ form.content }}
+                    {% if form.content.errors %}
+                        {% for error in form.content.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
 
                 <div class="mb-3">
                     <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
                     {{ form.category }}
+                    {% if form.category.errors %}
+                        {% for error in form.category.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                
+
                 <div class="mb-3 form-check">
                     {{ form.published }}
                     <label for="{{ form.published.id_for_label }}" class="form-check-label">Publish Post</label>
+                    {% if form.published.errors %}
+                        {% for error in form.published.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
 
-                <hr>
+                <hr class="my-4">
 
-                <h3>Add a Featured Image</h3>
-                <p class="text-muted">You can either upload a file or paste an image URL.</p>
-                
+                <h3 class="mb-3">Add a Featured Image</h3>
+                <p class="text-muted mb-3">You can either upload a file or paste an image URL.</p>
+
                 <div class="mb-3">
                     <label for="{{ form.image.id_for_label }}" class="form-label">Featured Image</label>
                     {{ form.image }}
+                    {% if form.image.errors %}
+                        {% for error in form.image.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                
-                <p class="text-center my-3 fw-bold">OR</p>
-                
+
+                <p class="text-center my-3 fw-bold text-secondary">OR</p>
+
                 <div class="mb-3">
                     <label for="{{ form.image_url.id_for_label }}" class="form-label">Paste Image URL</label>
                     {{ form.image_url }}
+                    {% if form.image_url.errors %}
+                        {% for error in form.image_url.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
 
                 <div class="mb-3">
                     <label for="{{ form.image_caption.id_for_label }}" class="form-label">Image Caption (Optional)</label>
                     {{ form.image_caption }}
+                    {% if form.image_caption.errors %}
+                        {% for error in form.image_caption.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                
-                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 mt-3">Submit</button>
             </form>
         </div>
     </div>

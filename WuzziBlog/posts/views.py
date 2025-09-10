@@ -41,6 +41,7 @@ def add_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            messages.success(request, "Post created successfully!")
             return redirect("posts:post_detail", slug=post.slug)
     else:
         form = PostForm()
@@ -48,6 +49,7 @@ def add_post(request):
 
 def logout_view(request):
     logout(request)
+    messages.info(request, "You have been logged out.")
     return redirect("posts:home")
 
 def register(request):
@@ -56,10 +58,11 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "Registration successful! Welcome to WuzziBlog.")
             return redirect("posts:home")
     else:
         form = RegisterForm()
-    return render(request, "posts/register.html", {"form": form})
+    return render(request, "users/register.html", {"form": form})
 
 @login_required
 @require_POST
@@ -183,6 +186,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        messages.success(self.request, "Post updated successfully!")
         return super().form_valid(form)
 
     def test_func(self):
@@ -200,6 +204,10 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+
+    def post(self, request, *args, **kwargs):
+        messages.success(request, "Post deleted successfully!")
+        return super().post(request, *args, **kwargs)
 
 def search_posts(request):
     query = request.GET.get("q")
