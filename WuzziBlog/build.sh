@@ -9,12 +9,8 @@ pip install -r requirements.txt
 python manage.py collectstatic --noinput
 
 
-# Create a superuser non-interactively if environment variables are set
-if [[ $DJANGO_SUPERUSER_USERNAME && $DJANGO_SUPERUSER_PASSWORD ]]; then
-  python manage.py createsuperuser --no-input
-fi
-
-# Run migrations
 python manage.py migrate
+    python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL
+
 # Apply database migrations
 python manage.py migrate
