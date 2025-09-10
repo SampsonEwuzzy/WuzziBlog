@@ -9,7 +9,7 @@ services:
 plan: free
 name: WuzziBlog
 runtime: python
-**rootDirectory: WuzziBlog**
+rootDirectory: WuzziBlog
 buildCommand: './build.sh'
 startCommand: 'gunicorn --bind 0.0.0.0:<PORT> --log-level debug --error-logfile - WuzziBlog.wsgi'
 envVars:
