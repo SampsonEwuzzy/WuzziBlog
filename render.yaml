@@ -10,7 +10,7 @@ services:
     name: WuzziBlog
     runtime: python
     buildCommand: './build.sh'
-    startCommand: 'gunicorn WuzziBlog.wsgi:application'
+    startCommand: 'gunicorn --bind 0.0.0.0:<PORT> --log-level debug --error-logfile - WuzziBlog.wsgi'
     envVars:
       - key: DATABASE_URL
         fromDatabase:
