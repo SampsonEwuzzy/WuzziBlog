@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from ckeditor_uploader.fields import RichTextUploadingField 
 from django.urls import reverse
-from cloudinary.models import CloudinaryField
+from cloudinary.models import CloudinaryField # This import is essential
 
 # Corrected Models
 # Define the Category model first so other models can reference it.
@@ -21,9 +21,12 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     published = models.BooleanField(default=True)
-    image = models.ImageField(upload_to="post_images/", blank=True, null=True)
+    
+    # This is the correct field for Cloudinary
+    image = CloudinaryField('image', blank=True, null=True)
+    
     image_url = models.URLField(blank=True, null=True, max_length=2000)
-    image_caption = models.CharField(max_length=255, blank=True) # Add this field
+    image_caption = models.CharField(max_length=255, blank=True)
     # The 'likes' field is a ManyToManyField on the Post model
     likes = models.ManyToManyField(User, related_name='liked_posts', through='Like', blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='posts')
@@ -61,14 +64,12 @@ class Post(models.Model):
 # This caused a clash with the Post.likes field.
 # The fix is to add a unique related_name to the ForeignKey.
 
-
 class Photo(models.Model):
     title = models.CharField(max_length=200)
-    image = CloudinaryField('image')  # automatically uploads to Cloudinary
+    image = CloudinaryField('image') # automatically uploads to Cloudinary
 
     def __str__(self):
         return self.title
-
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -81,7 +82,6 @@ class Like(models.Model):
     
     def __str__(self):
         return f'{self.user.username} likes {self.post.title}'
-
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)

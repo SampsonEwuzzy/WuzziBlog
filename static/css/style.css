@@ -93,47 +93,59 @@ h1, h2 {
     padding: 0 15px;
 }
 
-/* ===== Carousel (viewport-fitting, subtract navbar) ===== */
-.carousel.custom-carousel,
-.carousel.custom-carousel .carousel-inner,
-.carousel.custom-carousel .carousel-item {
-    height: calc(100vh - var(--nav-height));
-    max-height: calc(100vh - var(--nav-height));
+/* ===== New Card & Carousel Sizing ===== */
+.card.custom-card {
+    max-width: 800px; /* Limits the max size of the card */
+    margin: 20px auto 40px; /* Added margin to push it off the footer */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
-
+.carousel.custom-carousel {
+    height: auto; /* Allow height to be determined by the image */
+}
+.carousel.custom-carousel .carousel-inner {
+    height: auto;
+}
+.carousel.custom-carousel .carousel-item {
+    height: auto;
+}
 .carousel.custom-carousel .carousel-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
+    height: auto;
+    object-fit: contain; /* Ensures the whole image is visible */
+    border-radius: 8px 8px 0 0;
 }
 
-.carousel.custom-carousel .carousel-item {
-    background: #000;
-    border-radius: 0;
-    box-shadow: none;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-}
-.carousel.custom-carousel .carousel-item:hover {
-    transform: scale(1.01);
-}
-
-/* Caption always visible */
+/* Caption with gradient overlay for professional look */
 .carousel.custom-carousel .carousel-caption {
     display: block !important;
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    width: 100%;                 /* span entire image width */
-    background: rgba(0,0,0,0.55); /* dark overlay for readability */
-    padding: 1rem;
-    border-radius: 0;            /* no rounded corners, flush with image edges */
-    font-size: 1rem;
+    width: 100%;
+    
+    /* Subtle gradient overlay from transparent to dark */
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+    
+    padding: 2rem 1rem 1rem;
+    text-align: left; /* Aligned caption to the left */
     color: #fff;
-    text-align: center;
+}
+.carousel-caption h5 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* Added text shadow for legibility */
+}
+.carousel-caption p {
+    font-size: 1.1rem;
+    font-weight: 400;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7); /* Added text shadow for legibility */
+}
+
+/* Optional: Add hover effect to the carousel */
+.carousel.custom-carousel:hover {
+    transform: scale(1.005);
+    transition: transform 0.5s ease-in-out;
 }
 
 /* ===== Forms ===== */
@@ -235,14 +247,19 @@ form.custom-form button:hover {
     .carousel.custom-carousel,
     .carousel.custom-carousel .carousel-inner,
     .carousel.custom-carousel .carousel-item {
-        height: calc(100vh - var(--nav-height));
+        height: auto;
     }
 
     .carousel.custom-carousel .carousel-caption {
+        text-align: center; /* Center align on mobile */
         font-size: 0.9rem;
-        max-width: 90%;
-        padding: 8px 12px;
-        bottom: 7%;
+        padding: 1rem 1rem 0.5rem;
+    }
+    .carousel-caption h5 {
+        font-size: 1.5rem;
+    }
+    .carousel-caption p {
+        font-size: 0.9rem;
     }
 }
 
@@ -250,8 +267,6 @@ form.custom-form button:hover {
     .navbar.custom-navbar .navbar-brand { font-size: 1.3rem; }
     .carousel.custom-carousel .carousel-caption {
         font-size: 0.8rem;
-        max-width: 95%;
-        bottom: 6%;
     }
     form.custom-form { padding: 15px; }
     form.custom-form input,

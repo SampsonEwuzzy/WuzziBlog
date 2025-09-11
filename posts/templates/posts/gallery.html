@@ -1,13 +1,26 @@
+{% load cloudinary %}
+
 <h2>Gallery</h2>
-{% for photo in photos %}
-  <div>
-    <p>{{ photo.title }}</p>
-    <img src="{{ photo.image.url }}" width="300">
-  </div>
-{% empty %}
-  <p>No photos yet.</p>
-{% endfor %}
+
+{% if photos %}
+    <div class="row">
+        {% for photo in photos %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <figure>
+                        {% cloudinary photo.image class="card-img-top" crop="fill" gravity="face" width=400 height=300 alt=photo.title %}
+                    </figure>
+                    <div class="card-body">
+                        <p class="card-title">{{ photo.title }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No photos yet.</p>
+{% endif %}
 
 <p>
-  <a href="{% url 'upload' %}">Upload a new photo</a>
+    <a href="{% url 'upload' %}">Upload a new photo</a>
 </p>

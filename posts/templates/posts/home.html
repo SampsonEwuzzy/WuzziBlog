@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load cloudinary %}
 
 {% block content %}
 <div class="container custom-container">
@@ -6,37 +7,39 @@
     <h1 class="mb-4 text-center">Welcome to WuzziBlog</h1>
 
     {% if latest_posts %}
-    <div id="postCarousel" class="carousel slide custom-carousel" data-bs-ride="carousel">
-        <div class="carousel-inner">
+    <div class="card custom-card"> <div id="postCarousel" class="carousel slide custom-carousel" data-bs-ride="carousel">
+            <div class="carousel-inner">
 
-            {% for post in latest_posts %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <a href="{% url 'posts:post_detail' slug=post.slug %}" class="d-block w-100 text-decoration-none">
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" class="d-block w-100" alt="{{ post.title }}">
-                    {% else %}
-                        <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="Placeholder">
-                    {% endif %}
-                    <div class="carousel-caption d-none d-md-block w-100">
-                        <h5>{{ post.title }}</h5>
-                        <p>{{ post.content|striptags|truncatechars:100 }}</p>
-                    </div>
-                </a>
+                {% for post in latest_posts %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <a href="{% url 'posts:post_detail' slug=post.slug %}" class="d-block w-100 text-decoration-none">
+                        {% if post.image %}
+                            {% cloudinary post.image class="d-block w-100 card-img-top" crop="fit" width=800 alt=post.title %}
+                        {% else %}
+                            <img src="https://via.placeholder.com/800x600" class="d-block w-100 card-img-top" alt="Placeholder">
+                        {% endif %}
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>{{ post.title }}</h5>
+                            <p>{{ post.content|striptags|truncatechars:100 }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+
             </div>
-            {% endfor %}
 
+            <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-
-        <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div> {% else %}
         <p class="text-center">No posts yet.</p>
     {% endif %}
 
-</div> {% endblock %}
+</div>
+{% endblock content %}
