@@ -98,8 +98,16 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = 'static/'
+
+# Always define STATIC_ROOT so collectstatic works in all environments
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Optional: if you have extra static dirs inside your project
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
 if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
