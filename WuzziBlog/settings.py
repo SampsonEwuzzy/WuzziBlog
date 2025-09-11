@@ -29,15 +29,29 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
 
     # Third-party apps
     'ckeditor',
     'ckeditor_uploader',
+    'cloudinary',
+    'cloudinary_storage',
 
     # Project apps
     'posts',
     'users',
 ]
+
+
+# Cloudinary config (replace with your values from Cloudinary dashboard)
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dkuceshx9',
+    'API_KEY': '579141783434638',
+    'API_SECRET': '**********'
+}
+
+# Tell Django to use Cloudinary for media storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

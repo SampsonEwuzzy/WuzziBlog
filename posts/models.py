@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from ckeditor_uploader.fields import RichTextUploadingField 
 from django.urls import reverse
+from cloudinary.models import CloudinaryField
 
 # Corrected Models
 # Define the Category model first so other models can reference it.
@@ -59,6 +60,16 @@ class Post(models.Model):
 # The Like model creates a reverse relationship.
 # This caused a clash with the Post.likes field.
 # The fix is to add a unique related_name to the ForeignKey.
+
+
+class Photo(models.Model):
+    title = models.CharField(max_length=200)
+    image = CloudinaryField('image')  # automatically uploads to Cloudinary
+
+    def __str__(self):
+        return self.title
+
+
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     # FIX: Remove 'related_name' to allow Post.likes to correctly manage the relationship.

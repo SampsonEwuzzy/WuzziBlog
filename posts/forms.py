@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Post, Comment
 from django.core.exceptions import ValidationError
+from .models import Photo
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(
@@ -37,6 +38,11 @@ class RegisterForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise ValidationError("This email is already registered.")
         return email
+
+class PhotoForm(forms.ModelForm):
+    class Meta:
+        model = Photo
+        fields = ['title', 'image']
 
 class PostForm(forms.ModelForm):
     image = forms.ImageField(

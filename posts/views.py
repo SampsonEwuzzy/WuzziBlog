@@ -10,6 +10,8 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import UpdateView, DeleteView
 from django.db.models import Q
+from .forms import PhotoForm
+from .models import Photo
 
 def home(request):
     latest_posts = Post.objects.filter(published=True).order_by("-created_at")[:4]
@@ -46,6 +48,21 @@ def add_post(request):
     else:
         form = PostForm()
     return render(request, "posts/post_form.html", {"form": form})
+
+@login_required
+def upload_photo(request):
+    if request.method == "POST":
+        form = PhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("gallery")
+    else:
+        form = PhotoForm()
+    return render(request, "upload.html", {"form": form})
+
+def gallery(request):
+    photos = Photo.objects.all()
+    return render(request, "gallery.html", {"photos": photos})
 
 def logout_view(request):
     logout(request)

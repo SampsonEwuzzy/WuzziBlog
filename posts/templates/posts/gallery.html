@@ -1,0 +1,13 @@
+<h2>Gallery</h2>
+{% for photo in photos %}
+  <div>
+    <p>{{ photo.title }}</p>
+    <img src="{{ photo.image.url }}" width="300">
+  </div>
+{% empty %}
+  <p>No photos yet.</p>
+{% endfor %}
+
+<p>
+  <a href="{% url 'upload' %}">Upload a new photo</a>
+</p>

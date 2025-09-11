@@ -39,7 +39,12 @@ urlpatterns = [
          name="password_reset_confirm"),
     path("reset/done/", 
          auth_views.PasswordResetCompleteView.as_view(template_name="posts/password_reset_complete.html"), 
-         name="password_reset_complete"), 
+         name="password_reset_complete"),
+     path("upload/", views.upload_photo, 
+          name="upload"),
+    path("gallery/", views.gallery, 
+          name="gallery"), 
+
 ]
 
 # Serve media files in development
